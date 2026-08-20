@@ -1,0 +1,89 @@
+@{
+    ViewData["Title"] = "Admin - Dashboard";
+}
+
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-0">Admin Dashboard</h2>
+      <small class="text-muted-custom">Overview of students' marks and performance</small>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-12 col-lg-8">
+      <div class="card-modern">
+        <h5 class="mb-3">Average Marks by Subject</h5>
+        <div class="chart-card">
+          <canvas id="gradesChart" style="width:100%"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="card-modern">
+        <h5 class="mb-3">Performance Distribution</h5>
+        <div class="chart-card">
+          <canvas id="distChart" style="width:100%"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+  <script>
+    (function(){
+      const url = '@Url.Action("Data","Admin")';
+      fetch(url).then(r => r.json()).then(payload => {
+        // Grades bar/line chart
+        const gctx = document.getElementById('gradesChart').getContext('2d');
+        new Chart(gctx, {
+          type: 'bar',
+          data: {
+            labels: payload.grades.labels,
+            datasets: [
+              {
+                label: 'Average Marks',
+                data: payload.grades.data,
+                backgroundColor: 'rgba(37,99,235,0.9)',
+                borderRadius: 6,
+                barPercentage: 0.7
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            },
+            scales: {
+              y: { beginAtZero: true, max: 100 }
+            }
+          }
+        });
+
+        // Distribution pie chart
+        const dctx = document.getElementById('distChart').getContext('2d');
+        new Chart(dctx, {
+          type: 'pie',
+          data: {
+            labels: payload.distribution.labels,
+            datasets: [{
+              data: payload.distribution.data,
+              backgroundColor: [
+                'rgba(34,197,94,0.9)',
+                'rgba(59,130,246,0.9)',
+                'rgba(234,179,8,0.9)',
+                'rgba(239,68,68,0.9)',
+                'rgba(107,114,128,0.9)'
+              ]
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+      }).catch(err => console.error('Failed to load admin data', err));
+    })();
+  </script>
+}

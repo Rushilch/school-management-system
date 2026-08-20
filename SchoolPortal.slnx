@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".dockerignore" />
+    <File Path=".gitignore" />
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Project Path="Grades.Mvc/Grades.Mvc.csproj" />
+  <Project Path="Students.Mvc/Students.Mvc.csproj" />
+</Solution>

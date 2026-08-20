@@ -1,0 +1,9 @@
+/* Admin specific styles with light/dark CSS variables */
+:root{
+  --bg:#f8fafc; --panel:#fff; --text:#06283d; --muted:#6b7280; --accent:#2563eb;
+}
+[data-theme='dark']{ --bg:#071126; --panel:#0b1220; --text:#dbeafe; --muted:#9aa6bf; --accent:#3b82f6; }
+body{background:var(--bg); color:var(--text); font-family:Segoe UI, Roboto, Arial, sans-serif}
+.navbar{background:linear-gradient(135deg,var(--accent),#1e293b)!important}
+.card{background:var(--panel); border-radius:10px; box-shadow:0 6px 20px rgba(2,6,23,0.06);}
+.container{max-width:1100px}

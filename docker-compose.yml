@@ -1,0 +1,98 @@
+﻿services:
+  # SQL SERVER
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    healthcheck:
+      test: ["CMD-SHELL", "grep -q 'SQL Server is now ready for client connections' /var/opt/mssql/log/errorlog"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    container_name: sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Student@12345"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    networks:
+      - school-net
+
+
+  # STUDENTS MVC
+
+  students-mvc:
+    build:
+      context: .
+      dockerfile: ./Students.Mvc/Dockerfile
+    container_name: students-mvc
+    ports:
+      - "5001:80"
+    volumes:
+      - ./Students.Mvc:/src
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=StudentsDb;User Id=sa;******;TrustServerCertificate=True;
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - school-net
+
+
+  # GRADES MVC
+
+  grades-mvc:
+    build:
+      context: .
+      dockerfile: ./Grades.Mvc/Dockerfile
+    container_name: grades-mvc
+    ports:
+      - "5002:80"
+    volumes:
+      - ./Grades.Mvc:/src
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=GradeDb;User Id=sa;******;TrustServerCertificate=True;
+      - StudentsService__BaseUrl=http://students-mvc/
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - school-net
+
+
+  admin-mvc:
+    build:
+      context: .
+      dockerfile: ./Admin.Mvc/Dockerfile
+    container_name: admin-mvc
+    ports:
+      - "5003:80"
+    volumes:
+      - ./Admin.Mvc:/src
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__StudentsConnection=Server=sqlserver;Database=StudentsDb;User Id=sa;******;TrustServerCertificate=True;
+      - ConnectionStrings__GradesConnection=Server=sqlserver;Database=GradeDb;User Id=sa;******;TrustServerCertificate=True;
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - school-net
+
+# NETWORK
+
+networks:
+  school-net:
+    driver: bridge
+
+
+# VOLUMES
+
+volumes:
+  sql_data:
+

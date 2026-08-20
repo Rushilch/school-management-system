@@ -1,0 +1,39 @@
+﻿@{
+  ViewData["Title"] = "Welcome";
+}
+
+<div class="container">
+  <div class="text-center mb-4">
+    <h1 class="mb-0">School Administration</h1>
+    <p class="text-muted">Central dashboard and links to the Students and Grades apps</p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-12 col-md-6">
+      <a href="http://localhost:5001/Students" class="text-decoration-none">
+        <div class="card-modern p-4 text-center">
+          <h4>Students</h4>
+          <p class="text-muted">Manage student records</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <a href="http://localhost:5002/Grades" class="text-decoration-none">
+        <div class="card-modern p-4 text-center">
+          <h4>Grades</h4>
+          <p class="text-muted">Manage grades and assessments</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-12 mt-3">
+      <a href="/Admin" class="text-decoration-none">
+        <div class="card-modern p-4 text-center">
+          <h4>Admin Dashboard</h4>
+          <p class="text-muted">View analytics and student performance</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>

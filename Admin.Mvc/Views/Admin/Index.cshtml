@@ -1,0 +1,129 @@
+@{
+    ViewData["Title"] = "Admin - Dashboard";
+}
+
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-0">Admin Dashboard</h2>
+      <small class="text-muted">Overview of students' marks and performance</small>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-12 col-lg-8">
+      <div class="card p-3">
+        <h5 class="mb-3">Average Marks by Subject</h5>
+        <div style="min-height:280px;">
+          <canvas id="gradesChart" style="width:100%"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="card p-3">
+        <h5 class="mb-3">Performance Distribution</h5>
+        <div style="min-height:280px;">
+          <canvas id="distChart" style="width:100%"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12 col-lg-6">
+      <div class="card p-3">
+        <h5 class="mb-3">Select Student</h5>
+        <select id="studentSelect" class="form-select">
+          <option value="">-- Select a student --</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
+      <div class="card p-3">
+        <h5 class="mb-3">Selected Student Marks</h5>
+        <div id="studentMarksArea">
+          <em class="text-muted">Choose a student to view marks.</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+@section Scripts {
+  <script>
+    (function(){
+      const url = '@Url.Action("Data","Admin")';
+      fetch(url).then(r => r.json()).then(payload => {
+        const gctx = document.getElementById('gradesChart').getContext('2d');
+        new Chart(gctx, {
+          type: 'bar',
+          data: { labels: payload.grades.labels, datasets: [{ label: 'Average Marks', data: payload.grades.data, backgroundColor: 'rgba(54, 162, 235, 0.9)', borderRadius: 6 }] },
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 100 } } }
+        });
+
+        const dctx = document.getElementById('distChart').getContext('2d');
+        new Chart(dctx, {
+          type: 'pie',
+          data: { labels: payload.distribution.labels, datasets: [{ data: payload.distribution.data, backgroundColor: ['#22c55e','#3b82f6','#f59e0b','#ef4444','#6b7280'] }] },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+      }).catch(err => console.error('Failed to load admin data', err));
+
+      // Load students for selection
+      const studentsUrl = '@Url.Action("Students","Admin")';
+      const select = document.getElementById('studentSelect');
+      fetch(studentsUrl).then(r => r.json()).then(list => {
+        list.forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s.id;
+          opt.textContent = s.name;
+          select.appendChild(opt);
+        });
+      }).catch(err => console.error('Failed to load students', err));
+
+      select.addEventListener('change', (e) => {
+        const id = e.target.value;
+        const area = document.getElementById('studentMarksArea');
+        area.innerHTML = '<em class="text-muted">Loading...</em>';
+        if (!id) { area.innerHTML = '<em class="text-muted">Choose a student to view marks.</em>'; return; }
+        fetch('@Url.Action("StudentMarks","Admin")?id=' + encodeURIComponent(id)).then(r => r.json()).then(marks => {
+          if (!marks || marks.length === 0) { area.innerHTML = '<div class="text-muted">No marks found for this student.</div>'; return; }
+
+          // Build a small table and a chart
+          const table = document.createElement('table');
+          table.className = 'table table-sm';
+          table.innerHTML = '<thead><tr><th>Course</th><th>Score</th><th>Date</th></tr></thead>';
+          const tbody = document.createElement('tbody');
+          marks.forEach(m => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${m.courseName}</td><td>${m.score}</td><td>${new Date(m.gradeDate).toLocaleDateString()}</td>`;
+            tbody.appendChild(tr);
+          });
+          table.appendChild(tbody);
+
+          area.innerHTML = '';
+          const chartDiv = document.createElement('div');
+          chartDiv.style.minHeight = '200px';
+          chartDiv.innerHTML = '<canvas id="studentMarksChart"></canvas>';
+          area.appendChild(table);
+          area.appendChild(chartDiv);
+
+          const ctx = document.getElementById('studentMarksChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: marks.map(m => new Date(m.gradeDate).toLocaleDateString()),
+              datasets: [{ label: 'Score', data: marks.map(m => m.score), borderColor: 'rgba(99,102,241,0.9)', backgroundColor: 'rgba(99,102,241,0.2)', tension: 0.25 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
+          });
+
+        }).catch(err => { area.innerHTML = '<div class="text-danger">Failed to load marks</div>'; console.error(err); });
+      });
+
+    })();
+  </script>
+}

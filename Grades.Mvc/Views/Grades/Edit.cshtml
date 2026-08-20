@@ -1,0 +1,173 @@
+@model Grades.Mvc.Models.Grade
+
+@{
+    ViewData["Title"] = "Edit Grade";
+}
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold text-dark mb-0">
+                <i class="bi bi-pencil-square text-warning me-2"></i>
+                Edit Grade
+            </h2>
+
+            <small class="text-muted">
+                Update student grade information
+            </small>
+        </div>
+
+        <a asp-action="Index" class="btn btn-outline-dark">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to List
+        </a>
+
+    </div>
+
+    <!-- Card -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+        <!-- Header -->
+        <div class="card-header bg-dark text-white py-3 px-4">
+            <span class="fw-semibold text-uppercase small">
+                <i class="bi bi-pencil-fill me-2"></i>
+                Edit Information
+            </span>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body p-4">
+
+            <form asp-action="Edit">
+
+                <input type="hidden" asp-for="Id" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="alert alert-danger"></div>
+
+                <div class="row g-4">
+
+                    <!-- Student -->
+                    <div class="col-md-6">
+
+                        <label asp-for="StudentId"
+                               class="form-label fw-semibold">
+
+                            <i class="bi bi-person-fill me-1"></i>
+                            Student
+                        </label>
+
+                        <select asp-for="StudentId"
+                                class="form-select form-select-lg">
+
+                            <option value="">
+                                -- Select Student --
+                            </option>
+
+                            @foreach (var student in ViewBag.Students)
+                            {
+                                <option value="@student.Id">
+                                    @student.FirstName @student.LastName
+                                </option>
+                            }
+
+                        </select>
+
+                        <span asp-validation-for="StudentId"
+                              class="text-danger small"></span>
+
+                    </div>
+
+                    <!-- Course -->
+                    <div class="col-md-6">
+
+                        <label asp-for="CourseName"
+                               class="form-label fw-semibold">
+
+                            <i class="bi bi-book-fill me-1"></i>
+                            Course Name
+                        </label>
+
+                        <input asp-for="CourseName"
+                               class="form-control form-control-lg"
+                               placeholder="Enter course name" />
+
+                        <span asp-validation-for="CourseName"
+                              class="text-danger small"></span>
+
+                    </div>
+
+                    <!-- Score -->
+                    <div class="col-md-6">
+
+                        <label asp-for="Score"
+                               class="form-label fw-semibold">
+
+                            <i class="bi bi-bar-chart-fill me-1"></i>
+                            Score
+                        </label>
+
+                        <input asp-for="Score"
+                               class="form-control form-control-lg"
+                               placeholder="Enter score" />
+
+                        <span asp-validation-for="Score"
+                              class="text-danger small"></span>
+
+                    </div>
+
+                    <!-- Grade Date -->
+                    <div class="col-md-6">
+
+                        <label asp-for="GradeDate"
+                               class="form-label fw-semibold">
+
+                            <i class="bi bi-calendar-event-fill me-1"></i>
+                            Grade Date
+                        </label>
+
+                        <input asp-for="GradeDate"
+                               type="date"
+                               class="form-control form-control-lg" />
+
+                        <span asp-validation-for="GradeDate"
+                              class="text-danger small"></span>
+
+                    </div>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex gap-2 mt-4">
+
+                    <button type="submit"
+                            class="btn btn-warning text-white px-4">
+
+                        <i class="bi bi-check-circle me-1"></i>
+                        Save Changes
+                    </button>
+
+                    <a asp-action="Index"
+                           class="btn btn-outline-secondary px-4">
+
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

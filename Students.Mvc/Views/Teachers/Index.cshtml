@@ -1,0 +1,11 @@
+@model IEnumerable<Students.Mvc.Models.Teacher>
+
+<h2>Teachers</h2>
+<table class="table">
+  <thead><tr><th>Name</th><th>Email</th></tr></thead>
+  <tbody>
+    @foreach(var t in Model){
+      <tr><td>@(t.FirstName + " " + t.LastName)</td><td>@t.Email</td></tr>
+    }
+  </tbody>
+</table>

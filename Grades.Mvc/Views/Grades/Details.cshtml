@@ -1,0 +1,154 @@
+@model Grades.Mvc.ViewModels.GradeViewModel
+
+@{
+    ViewData["Title"] = "Grade Details";
+}
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold text-dark mb-0">
+                <i class="bi bi-eye-fill text-primary me-2"></i>
+                Grade Details
+            </h2>
+
+            <small class="text-muted">
+                View complete grade information
+            </small>
+        </div>
+
+        <a asp-action="Index" class="btn btn-outline-dark">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to List
+        </a>
+
+    </div>
+
+    <!-- Card -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+        <!-- Card Header -->
+        <div class="card-header bg-dark text-white py-3 px-4">
+            <span class="fw-semibold text-uppercase small">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                Grade Information
+            </span>
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body p-4">
+
+            <div class="row g-4">
+
+                <!-- Student -->
+                <div class="col-md-6">
+                    <div class="border rounded-4 p-3 bg-light h-100">
+
+                        <small class="text-muted text-uppercase fw-semibold">
+                            Student
+                        </small>
+
+                        <div class="fw-bold fs-5 mt-1">
+                            <i class="bi bi-person-fill text-primary me-1"></i>
+                            @Model.StudentName
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Course -->
+                <div class="col-md-6">
+                    <div class="border rounded-4 p-3 bg-light h-100">
+
+                        <small class="text-muted text-uppercase fw-semibold">
+                            Course Name
+                        </small>
+
+                        <div class="fw-bold fs-5 mt-1">
+                            <i class="bi bi-book-fill text-primary me-1"></i>
+                            @Model.CourseName
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Score -->
+                <div class="col-md-6">
+                    <div class="border rounded-4 p-3 bg-light h-100">
+
+                        <small class="text-muted text-uppercase fw-semibold">
+                            Score
+                        </small>
+
+                        <div class="mt-2">
+
+                            @if (Model.Score >= 85)
+                            {
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-6">
+                                    Excellent - @Model.Score
+                                </span>
+                            }
+                            else if (Model.Score >= 60)
+                            {
+                                <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2 fs-6">
+                                    Good - @Model.Score
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 fs-6">
+                                    Failed - @Model.Score
+                                </span>
+                            }
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Grade Date -->
+                <div class="col-md-6">
+                    <div class="border rounded-4 p-3 bg-light h-100">
+
+                        <small class="text-muted text-uppercase fw-semibold">
+                            Grade Date
+                        </small>
+
+                        <div class="fw-semibold fs-6 mt-2">
+                            <i class="bi bi-calendar-event-fill text-primary me-1"></i>
+                            @Model.GradeDate.ToShortDateString()
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex gap-2 mt-4">
+
+                <a asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-warning px-4 text-white">
+
+                    <i class="bi bi-pencil-square me-1"></i>
+                    Edit
+                </a>
+
+                <a asp-action="Delete"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-outline-danger px-4">
+
+                    <i class="bi bi-trash me-1"></i>
+                    Delete
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>

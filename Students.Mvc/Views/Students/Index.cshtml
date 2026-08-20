@@ -1,0 +1,133 @@
+@model IEnumerable<Students.Mvc.Models.Student>
+
+@{
+    ViewData["Title"] = "Students";
+    int counter = 0;
+    int total = Model?.Count() ?? 0;
+}
+
+<div class="container-lg py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-0">
+                <i class="bi bi-people-fill text-primary me-2"></i>Students List
+            </h2>
+            <small class="text-muted">All enrolled students</small>
+        </div>
+
+        <a asp-action="Create" class="btn btn-primary px-4">
+            <i class="bi bi-plus-lg me-1"></i> Add Student
+        </a>
+    </div>
+
+    <!-- Card -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+        <!-- Card Header -->
+        <div class="card-header bg-dark text-white py-3 px-4 d-flex justify-content-between align-items-center">
+            <span class="fw-semibold text-uppercase small" style="letter-spacing:1px;">
+                <i class="bi bi-table me-2"></i>Students Table
+            </span>
+
+          
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        
+                        <th class="text-muted fw-semibold small text-uppercase" style="width:80px">ID</th>
+                        <th class="text-muted fw-semibold small text-uppercase">Name</th>
+                        <th class="text-muted fw-semibold small text-uppercase">Enrollment Date</th>
+                        <th class="text-muted fw-semibold small text-uppercase text-center" style="width:140px">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        counter++;
+
+                        <tr>
+                           
+
+                            <td>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold font-monospace">
+                                    #@item.Id
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+
+                                    <div class="fw-semibold text-dark">
+                                        @item.FirstName @item.LastName
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="text-muted small">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    @item.EnrollmentDate.ToShortDateString()
+                                </span>
+                            </td>
+
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm" role="group">
+
+                                    <a asp-action="Details" asp-route-id="@item.Id"
+                                           class="btn btn-outline-info" title="Details"
+                                           data-bs-toggle="tooltip">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+
+                                    <a asp-action="Edit" asp-route-id="@item.Id"
+                                           class="btn btn-outline-warning" title="Edit"
+                                           data-bs-toggle="tooltip">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+
+                                    <a asp-action="Delete" asp-route-id="@item.Id"
+                                           class="btn btn-outline-danger" title="Delete"
+                                           data-bs-toggle="tooltip">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+
+        <!-- Card Footer -->
+        <div class="card-footer bg-light border-0 px-4 py-3">
+            <div class="d-flex align-items-center gap-2 text-muted small">
+                <i class="bi bi-info-circle"></i>
+
+                Showing
+                <span class="badge bg-dark rounded-pill">@total</span>
+
+                student@(total != 1 ? "s" : "")
+                in total
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            .forEach(el => new bootstrap.Tooltip(el));
+    </script>
+}
